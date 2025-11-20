@@ -11,8 +11,8 @@ const handleFolderClick = (folder: Folder) => {
 
 <template>
   <div class="right-panel">
-    <div v-if="isLoading" class="status-message">Loading children...</div>
-    <div v-else-if="error" class="status-message error">{{ error }}</div>
+    <!-- <div v-if="isLoading" class="status-message">Loading children...</div> -->
+    <div v-if="error" class="status-message error">{{ error }}</div>
     <div v-else-if="!selectedFolder" class="status-message">
       Select a folder to see its contents.
     </div>

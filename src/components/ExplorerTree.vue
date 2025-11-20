@@ -7,8 +7,8 @@ const { fullTree, isLoading, error } = useExplorer();
 
 <template>
   <div class="explorer-tree">
-    <div v-if="isLoading">Loading...</div>
-    <div v-else-if="error" class="error-message">Error: {{ error }}</div>
+    <!-- <div v-if="isLoading">Loading...</div> -->
+    <div v-if="error" class="error-message">Error: {{ error }}</div>
     <div v-else-if="fullTree.length > 0">
       <ExplorerNode
         v-for="folder in fullTree"
