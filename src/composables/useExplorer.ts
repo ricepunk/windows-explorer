@@ -3,7 +3,7 @@ import type { Folder } from "../types";
 
 // State
 const fullTree = ref<Folder[]>([]);
-const selectedFolder = ref<Folder | null>(null);
+const selectedFolder = ref<Readonly<Folder> | null>(null);
 const rightPanelChildren = ref<Folder[]>([]);
 const isLoading = ref(false);
 const error = ref<string | null>(null);
@@ -39,7 +39,7 @@ const fetchFullTree = async () => {
 	}
 };
 
-const selectFolder = async (folder: Folder) => {
+const selectFolder = async (folder: Readonly<Folder>) => {
 	selectedFolder.value = folder;
 	try {
 		const children = await fetchData<Folder[]>(`/api/v1/folders/${folder.id}`);

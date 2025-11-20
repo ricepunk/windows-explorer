@@ -1,40 +1,48 @@
-import type { Folder } from "../../types";
-import { folderRepository } from "../repositories/folderRepository";
+import type { Folder } from '../../types';
+import { folderRepository } from '../repositories/folderRepository';
 
-const buildTree = (folders: Omit<Folder, "children">[]): Folder[] => {
-	const folderMap = new Map<number, Folder>();
-	const rootFolders: Folder[] = [];
+// Internal type to allow mutation during tree construction
+type MutableFolder = {
+  id: number;
+  name: string;
+  parentId: number | null;
+  children: MutableFolder[];
+};
 
-	// First pass: create a map of all folders
-	folders.forEach((folder) => {
-		folderMap.set(folder.id, { ...folder, children: [] });
-	});
+const buildTree = (folders: Omit<Folder, 'children'>[]): Folder[] => {
+  const folderMap = new Map<number, MutableFolder>();
+  const rootFolders: MutableFolder[] = [];
 
-	// Second pass: build the tree
-	folders.forEach((folder) => {
-		if (folder.parentId !== null) {
-			const parent = folderMap.get(folder.parentId);
-			const child = folderMap.get(folder.id);
-			if (parent && child) {
-				parent.children?.push(child);
-			}
-		} else {
-			const rootFolder = folderMap.get(folder.id);
-			if (rootFolder) {
-				rootFolders.push(rootFolder);
-			}
-		}
-	});
+  // First pass: create a map of all folders
+  folders.forEach(folder => {
+    folderMap.set(folder.id, { ...folder, children: [] });
+  });
 
-	return rootFolders;
+  // Second pass: build the tree
+  folders.forEach(folder => {
+    if (folder.parentId !== null) {
+      const parent = folderMap.get(folder.parentId);
+      const child = folderMap.get(folder.id);
+      if (parent && child) {
+        parent.children.push(child);
+      }
+    } else {
+      const rootFolder = folderMap.get(folder.id);
+      if (rootFolder) {
+        rootFolders.push(rootFolder);
+      }
+    }
+  });
+
+  return rootFolders as Folder[];
 };
 
 export const folderService = {
-	getFullTree: async () => {
-		const allFolders = await folderRepository.findAll();
-		return buildTree(allFolders);
-	},
-	getFolderChildren: async (id: number) => {
-		return folderRepository.findChildrenOf(id);
-	},
+  getFullTree: async () => {
+    const allFolders = await folderRepository.findAll();
+    return buildTree(allFolders);
+  },
+  getFolderChildren: async (id: number) => {
+    return folderRepository.findChildrenOf(id);
+  },
 };

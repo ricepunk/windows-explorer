@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref, watch, type PropType } from 'vue';
 import type { Folder } from '../types';
 import { useExplorer } from '../composables/useExplorer';
 // Since this component is recursive, we need to import it explicitly.
 // In Vue 3, components are auto-imported, but this is a special case.
 import ExplorerNode from './ExplorerNode.vue';
 
-const props = defineProps<{
-  folder: Folder;
-}>();
+const props = defineProps({
+  folder: {
+    type: Object as PropType<Readonly<Folder>>,
+    required: true,
+  },
+});
 
 const { selectedFolder, selectFolder } = useExplorer();
 
